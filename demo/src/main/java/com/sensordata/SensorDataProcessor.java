@@ -3,7 +3,7 @@ package com.sensordata;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 
-public class SensorDataProcessor{
+public class SensorDataProcessor {
 
     // Senson data and limits.
     public double[][][] data;
@@ -13,17 +13,6 @@ public class SensorDataProcessor{
     public SensorDataProcessor(double[][][] data, double[][] limit) {
         this.data = data;
         this.limit = limit;
-    }
-
-    // calculates average of sensor data
-    private double average(double[] array) {
-        int i = 0;
-        double val = 0;
-        for (i = 0; i < array.length; i++) {
-            val += array[i];
-        }
-
-        return val / array.length;
     }
 
     // calculate data
@@ -40,20 +29,42 @@ public class SensorDataProcessor{
         try {
             out = new BufferedWriter(new FileWriter("RacingStatsData.txt"));
 
+            double invD = 1.0 / d;
             for (i = 0; i < data.length; i++) {
                 for (j = 0; j < data[0].length; j++) {
-                    for (k = 0; k < data[0][0].length; k++) {
-                        data2[i][j][k] = data[i][j][k] / d - Math.pow(limit[i][j], 2.0);
+                    double[] dataIj = data[i][j];
+                    double[] data2Ij = data2[i][j];
 
-                        if (average(data2[i][j]) > 10 && average(data2[i][j]) < 50)
+                    int dataIjLen = dataIj.length;
+                    double sumData = 0;
+                    for (int n = 0; n < dataIjLen; n++) {
+                        sumData += dataIj[n];
+                    }
+                    double avgData = sumData / dataIjLen; // Once per j
+
+                    double limitVal = limit[i][j];
+                    double limitSq = limitVal * limitVal;
+
+                    int data2IjLen = data2Ij.length;
+                    double invData2IjLen = 1.0 / data2IjLen;
+                    double sumData2 = 0;
+
+                    for (k = 0; k < data2IjLen; k++) {
+                        double currentData = dataIj[k];
+                        double val = currentData * invD - limitSq;
+                        data2Ij[k] = val;
+                        sumData2 += val;
+
+                        double avgData2 = sumData2 * invData2IjLen;
+
+                        if (avgData2 > 10 && avgData2 < 50) {
                             break;
-                        else if (Math.max(data[i][j][k], data2[i][j][k]) > data[i][j][k])
+                        } else if (val > currentData) {
                             break;
-                        else if (Math.pow(Math.abs(data[i][j][k]), 3) < Math.pow(Math.abs(data2[i][j][k]), 3)
-                                && average(data[i][j]) < data2[i][j][k] && (i + 1) * (j + 1) > 0)
-                            data2[i][j][k] *= 2;
-                        else
-                            continue;
+                        } else if (avgData < val && Math.abs(currentData) < Math.abs(val)) { // Removed (i+1)*(j+1)>0 since it's always true
+                            data2Ij[k] *= 2;
+                            sumData2 += val;
+                        }
                     }
                 }
             }
@@ -77,5 +88,5 @@ public class SensorDataProcessor{
             System.out.println("calculate() failed after " + elapsedMs + " ms");
         }
     }
-    
+
 }
