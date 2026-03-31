@@ -33,7 +33,9 @@ public class SensorDataProcessor {
 
         // int i, j, k = 0;
         int i, j, k; // Don't need to initialize to 0 here since we initialize in the loops
-        double[][][] data2 = new double[data.length][data[0].length][data[0][0].length];
+        // Create a new array to store the processed data
+        double[][][] data2 = new double[data.length][data[0].length][data[0][0].length]; // Length is O(1) so no need to
+                                                                                         // store in a variable
 
         BufferedWriter out;
 
@@ -47,10 +49,13 @@ public class SensorDataProcessor {
                         data2[i][j][k] = data[i][j][k] / d - Math.pow(limit[i][j], 2.0);
 
                         double d2avg = average(data2[i][j]); // Average of data2[i][j] can be calculated once here
-
+                        // if (average(data2[i][j]) > 10 && average(data2[i][j]) < 50) // Replaced
+                        // redundant calculations with a variable
                         if (d2avg > 10 && d2avg < 50) // Replaced redundant calculations with a variable
                             break;
-                        else if (Math.max(data[i][j][k], data2[i][j][k]) > data[i][j][k])
+                        // else if (Math.max(data[i][j][k], data2[i][j][k]) > data[i][j][k])
+                        else if (data2[i][j][k] > data[i][j][k]) // data[i][j][k] > data[i][j][k isn't possible so we
+                                                                 // can get rid of the max calculation
                             break;
                         // else if (Math.pow(Math.abs(data[i][j][k]), 3) <
                         // Math.pow(Math.abs(data2[i][j][k]), 3)
