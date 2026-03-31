@@ -156,4 +156,22 @@ public class SensorDataProcessorTest {
         SensorDataProcessor processor = new SensorDataProcessor(data, limits);
         assertDoesNotThrow(() -> processor.calculate(1.0));
     }
+
+    @Test
+    public void testCalculateCondition3_TF() {
+        // Target: Cond 3 LHS is true, but RHS is false, covering the previously uncovered false branch on the RHS condition.
+        // data = {0.0, 10.0}, limit = sqrt(2), d = 1.0 => limitsq = 2.0
+        // avgData = 5.0
+        // k=0: currentData = 0.0, val = -2.0. avgData (5.0) < val (-2.0) -> FALSE.
+        // k=1: currentData = 10.0, val = 8.0.
+        // Cond 2: val (8.0) > currentData (10.0) -> FALSE.
+        // Cond 3 LHS: avgData (5.0) < val (8.0) -> TRUE.
+        // Cond 3 RHS: abs(10) < abs(8) -> FALSE.
+        // This ensures the TRUE && FALSE path is fully covered.
+        double[][][] data = {{{0.0, 10.0}}};
+        double[][] limits = {{Math.sqrt(2.0)}};
+
+        SensorDataProcessor processor = new SensorDataProcessor(data, limits);
+        assertDoesNotThrow(() -> processor.calculate(1.0));
+    }
 }
