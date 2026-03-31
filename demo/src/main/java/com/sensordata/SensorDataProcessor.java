@@ -3,7 +3,7 @@ package com.sensordata;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 
-public class SensorDataProcessor{
+public class SensorDataProcessor {
 
     // Senson data and limits.
     public double[][][] data;
@@ -31,7 +31,9 @@ public class SensorDataProcessor{
 
         long startTime = System.nanoTime();
 
-        int i, j, k = 0;
+        // int i, j, k = 0; // Don't need to initialize to 0 here since we initialize in
+        // the loops
+        int i, j, k;
         double[][][] data2 = new double[data.length][data[0].length][data[0][0].length];
 
         BufferedWriter out;
@@ -52,8 +54,8 @@ public class SensorDataProcessor{
                         else if (Math.pow(Math.abs(data[i][j][k]), 3) < Math.pow(Math.abs(data2[i][j][k]), 3)
                                 && average(data[i][j]) < data2[i][j][k] && (i + 1) * (j + 1) > 0)
                             data2[i][j][k] *= 2;
-                        else
-                            continue;
+                        // else // Useless else statement
+                        // continue;
                     }
                 }
             }
@@ -77,5 +79,5 @@ public class SensorDataProcessor{
             System.out.println("calculate() failed after " + elapsedMs + " ms");
         }
     }
-    
+
 }
