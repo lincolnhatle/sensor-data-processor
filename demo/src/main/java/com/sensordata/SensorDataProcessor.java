@@ -45,10 +45,11 @@ public class SensorDataProcessor {
 
             for (i = 0; i < data.length; i++) {
                 for (j = 0; j < data[0].length; j++) {
+                    double d2avg = average(data2[i][j]); // Average of data2[i][j] can be calculated once here for the
+                                                         // whole k loop
                     for (k = 0; k < data[0][0].length; k++) {
                         data2[i][j][k] = data[i][j][k] / d - Math.pow(limit[i][j], 2.0);
 
-                        double d2avg = average(data2[i][j]); // Average of data2[i][j] can be calculated once here
                         // if (average(data2[i][j]) > 10 && average(data2[i][j]) < 50) // Replaced
                         // redundant calculations with a variable
                         if (d2avg > 10 && d2avg < 50) // Replaced redundant calculations with a variable

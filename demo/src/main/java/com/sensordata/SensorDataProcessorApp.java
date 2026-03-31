@@ -1,7 +1,7 @@
 package com.sensordata;
 
 public class SensorDataProcessorApp {
-    
+
     public static void main(String[] args) {
         // Large sample 3D sensor data: [sensorGroup][sensor][readings]
         int groups = 100;
